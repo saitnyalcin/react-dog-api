@@ -1,23 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import DogDetails from './DogDetails';
+import React, { useEffect, useState } from "react";
+import DogDetails from "./DogDetails";
 
 export default function Dog() {
   const [data, setData] = useState([]);
 
+  async function fetchData() {
+    await fetch("https://api.thedogapi.com/v1/images/search")
+      .then((response) => response.json())
+      .then((data) => setData(data))
+      .then((result) => {
+        console.log("Success:", result);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
+
   useEffect(() => {
-    axios
-      .get('https://api.thedogapi.com/v1/images/search')
-      .then(result => setData(result.data));
+    fetchData();
   }, []);
 
   return (
     <div>
-      {data.map(dog => (
+      {data.map((dog) => (
         <div key={dog.id}>
           <div className="main-flex-container">
             <div>
-              {dog.breeds.map(details => (
+              {dog.breeds.map((details) => (
                 <DogDetails
                   key={details.id}
                   name={details.name}
